@@ -1,6 +1,6 @@
 # scclr
 
-Single-cell **shifted-CLR / PFlog1pPF** normalization and **sparse PCA** for Python — a
+Single-cell **shifted-CLR / PFlogPF** normalization and **sparse PCA** for Python — a
 scverse drop-in built on the Rust crates [`runorm`](../runorm) (normalization) and
 [`rupca`](../rupca) (sparse PCA), with [`ruanndata`](../ruanndata) for I/O.
 
