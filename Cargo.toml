@@ -14,6 +14,5 @@ crate-type = ["cdylib"]
 pyo3 = { version = "0.23", features = ["extension-module"] }
 numpy = "0.23"
 runorm = { git = "https://github.com/cleartools/runorm", features = ["ruanndata"] }
-# TODO: switch to the default branch once pachterlab/rupca#1 merges.
-rupca = { git = "https://github.com/pachterlab/rupca", branch = "fix-dsapps-restart-convergence", features = ["ruanndata"] }
+rupca = { git = "https://github.com/pachterlab/rupca", features = ["ruanndata"] }
 ruanndata = { git = "https://github.com/pachterlab/ruanndata" }
