@@ -11,7 +11,7 @@ runs on the implicit `sparse − row_center` matrix without densifying.
 
 ```bash
 uv venv
-uv pip install maturin numpy scipy anndata mudata scanpy
+uv pip install -e ".[test]" maturin
 uv run maturin develop --release
 ```
 
