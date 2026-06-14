@@ -19,7 +19,7 @@ def pca(
     adata,
     *,
     n_comps: int = 50,
-    layer: Optional[str] = "log1ppf",
+    layer: Optional[str] = "pflogpf",
     center_key: Optional[str] = None,
     ncv: Optional[int] = None,
     maxiter: Optional[int] = None,
@@ -28,7 +28,7 @@ def pca(
 ):
     """Sparse shifted-CLR PCA, written into the slots scanpy uses.
 
-    Reads the sparse log1pPF from ``adata.layers[layer]`` and the per-cell center from
+    Reads the sparse PFlogPF matrix from ``adata.layers[layer]`` and the per-cell center from
     ``adata.obs[center_key]`` (default ``f"{layer}_center"``) so PCA runs on the implicit
     ``layer - center`` without densifying. Writes:
 
@@ -52,6 +52,9 @@ def pca(
                 tol=tol,
             )
         return None
+
+    if layer == "pflogpf" and layer not in adata.layers and "log1ppf" in adata.layers:
+        layer = "log1ppf"
 
     ck = center_key if center_key is not None else (f"{layer}_center" if layer else None)
 

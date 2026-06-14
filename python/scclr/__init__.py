@@ -1,4 +1,4 @@
-"""scclr — single-cell shifted-CLR (PFlog1pPF) normalization + sparse PCA.
+"""scclr — single-cell shifted-CLR (PFlogPF) normalization + sparse PCA.
 
 A scverse drop-in. Two ways to use it:
 
@@ -9,7 +9,7 @@ A scverse drop-in. Two ways to use it:
 
 * **In-place scverse API** (AnnData / MuData), shaped like scanpy::
 
-      scclr.pp.pflog1ppf(adata, target="auto")      # -> adata.layers["log1ppf"] + obs center
+      scclr.pp.pflogpf(adata, target="auto")        # -> adata.layers["pflogpf"] + obs center
       scclr.tl.pca(adata, n_comps=50)               # -> adata.obsm["X_pca"], varm["PCs"], uns["pca"]
 
   which swaps in for ``sc.pp.normalize_total + sc.pp.log1p + sc.tl.pca``; downstream

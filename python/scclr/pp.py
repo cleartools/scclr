@@ -8,7 +8,7 @@ import numpy as np
 
 from . import _func
 
-__all__ = ["pflog1ppf", "overdispersion"]
+__all__ = ["pflogpf", "pflog1ppf", "overdispersion"]
 
 
 def _is_mudata(obj) -> bool:
@@ -19,29 +19,20 @@ def _get_matrix(adata, layer: Optional[str]):
     return adata.layers[layer] if layer is not None else adata.X
 
 
-def pflog1ppf(
+def _pflogpf_impl(
     adata,
     *,
     target="auto",
     alpha: Optional[float] = None,
     layer: Optional[str] = None,
-    key_added: str = "log1ppf",
+    key_added: str,
     center: bool = True,
     log1p: bool = True,
     densify: bool = False,
 ):
-    """Compute PFlog1pPF / shifted-CLR in place.
-
-    Writes the sparse log1pPF matrix to ``adata.layers[key_added]`` and (when ``center``) the
-    per-cell mean to ``adata.obs[f"{key_added}_center"]``; records the chosen ``k``/``alpha`` in
-    ``adata.uns[key_added]``. With ``densify=True`` also writes the dense shifted-CLR into
-    ``adata.X`` (scanpy-style, for generic downstream tools).
-
-    For a ``MuData`` object, applies independently to each modality.
-    """
     if _is_mudata(adata):
         for mod in adata.mod.values():
-            pflog1ppf(
+            _pflogpf_impl(
                 mod,
                 target=target,
                 alpha=alpha,
@@ -69,6 +60,66 @@ def pflog1ppf(
     if densify:
         adata.X = sclr.to_dense()
     return None
+
+
+def pflogpf(
+    adata,
+    *,
+    target="auto",
+    alpha: Optional[float] = None,
+    layer: Optional[str] = None,
+    key_added: str = "pflogpf",
+    center: bool = True,
+    log1p: bool = True,
+    densify: bool = False,
+):
+    """Compute PFlogPF / shifted-CLR in place.
+
+    Writes the sparse PFlogPF matrix to ``adata.layers[key_added]`` and (when ``center``) the
+    per-cell mean to ``adata.obs[f"{key_added}_center"]``; records the chosen ``k``/``alpha`` in
+    ``adata.uns[key_added]``. With ``densify=True`` also writes the dense shifted-CLR into
+    ``adata.X`` (scanpy-style, for generic downstream tools).
+
+    For a ``MuData`` object, applies independently to each modality.
+    """
+    return _pflogpf_impl(
+        adata,
+        target=target,
+        alpha=alpha,
+        layer=layer,
+        key_added=key_added,
+        center=center,
+        log1p=log1p,
+        densify=densify,
+    )
+
+
+def pflog1ppf(
+    adata,
+    *,
+    target="auto",
+    alpha: Optional[float] = None,
+    layer: Optional[str] = None,
+    key_added: str = "log1ppf",
+    center: bool = True,
+    log1p: bool = True,
+    densify: bool = False,
+):
+    """Backward-compatible alias for :func:`pflogpf`.
+
+    The legacy name stores results in ``adata.layers["log1ppf"]`` by default. New code should
+    prefer :func:`pflogpf`, which stores results under ``"pflogpf"``.
+    """
+    return _pflogpf_impl(
+        adata,
+        target=target,
+        alpha=alpha,
+        layer=layer,
+        key_added=key_added,
+        center=center,
+        log1p=log1p,
+        densify=densify,
+    )
 
 
 def overdispersion(adata, *, layer: Optional[str] = None):

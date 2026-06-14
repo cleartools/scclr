@@ -55,7 +55,7 @@ def _resolve_target(target):
 
 @dataclass
 class ShiftedCLR:
-    """Sparse shifted-CLR result: the log1pPF values plus the per-cell mean vector.
+    """Sparse shifted-CLR result: the PFlogPF values plus the per-cell mean vector.
 
     The dense value is ``sparse[i, j] - row_center[i]``. Kept sparse so PCA runs without
     densifying.
@@ -103,7 +103,7 @@ def overdispersion(X) -> dict:
 
 
 def normalize(X, target="mean", alpha=None, log1p=True, center=True) -> ShiftedCLR:
-    """PFlog1pPF / shifted-CLR normalization.
+    """PFlogPF / shifted-CLR normalization.
 
     ``target`` is ``"mean"``, ``"median"``, ``"auto"`` (estimate α → K = 4·α·s), or a numeric K.
     ``alpha`` (if given) sets K = 4·alpha·mean_depth directly.

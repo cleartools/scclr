@@ -4,7 +4,7 @@ Single-cell **shifted-CLR / PFlogPF** normalization and **sparse PCA** for Pytho
 scverse drop-in built on the Rust crates [`runorm`](../runorm) (normalization) and
 [`rupca`](../rupca) (sparse PCA), with [`ruanndata`](../ruanndata) for I/O.
 
-The normalization keeps the matrix sparse (the log1pPF values plus a per-cell mean vector); PCA
+The normalization keeps the matrix sparse (the PFlogPF values plus a per-cell mean vector); PCA
 runs on the implicit `sparse − row_center` matrix without densifying.
 
 ## Install (dev)
@@ -29,7 +29,7 @@ scverse in-place (AnnData / MuData), shaped like scanpy:
 
 ```python
 import scclr
-scclr.pp.pflog1ppf(adata, target="auto")    # -> adata.layers["log1ppf"] + obs center
+scclr.pp.pflogpf(adata, target="auto")      # -> adata.layers["pflogpf"] + obs center
 scclr.tl.pca(adata, n_comps=50)             # -> adata.obsm["X_pca"], varm["PCs"], uns["pca"]
 # downstream sc.pp.neighbors(adata) / sc.tl.umap(adata) work unchanged
 ```

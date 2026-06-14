@@ -5,7 +5,7 @@ build-backend = "maturin"
 [project]
 name = "scclr"
 version = "0.1.0"
-description = "Single-cell shifted-CLR (PFlog1pPF) normalization + sparse PCA — a scverse drop-in"
+description = "Single-cell shifted-CLR (PFlogPF) normalization + sparse PCA — a scverse drop-in"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "BSD-2-Clause" }

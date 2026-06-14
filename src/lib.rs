@@ -99,7 +99,7 @@ type NormalizeOut<'py> = (
     Option<f64>,               // alpha (if derived)
 );
 
-/// PFlog1pPF / shifted-CLR normalization. Returns the sparse log1pPF arrays plus `row_center`.
+/// PFlogPF / shifted-CLR normalization. Returns the sparse PFlogPF arrays plus `row_center`.
 #[pyfunction]
 #[pyo3(signature = (data, indices, indptr, shape, target="mean", fixed=None, alpha=None, log1p=true, center=true))]
 #[allow(clippy::too_many_arguments)]

@@ -30,8 +30,8 @@ def structured_counts(n_per=40, n_genes=30, n_groups=3, boost=25, seed=0):
     return counts
 
 
-def ref_pflog1ppf(counts, k):
-    """Independent dense PFlog1pPF reference."""
+def ref_pflogpf(counts, k):
+    """Independent dense PFlogPF reference."""
     s = counts.sum(1, keepdims=True)
     L = np.log1p(counts * (k / s))
     return L - L.mean(1, keepdims=True)
@@ -52,14 +52,14 @@ def test_normalize_matches_numpy_reference():
     sclr = scclr.normalize(X, target="mean")
     k = counts.sum(1).mean()
     assert abs(sclr.k - k) < 1e-9
-    np.testing.assert_allclose(sclr.to_dense(), ref_pflog1ppf(counts, k), atol=1e-9)
+    np.testing.assert_allclose(sclr.to_dense(), ref_pflogpf(counts, k), atol=1e-9)
 
 
 def test_normalize_preserves_sparsity_pattern():
     counts = nb_counts(seed=2)
     X = sp.csr_matrix(counts)
     sclr = scclr.normalize(X, target="auto")
-    # log1pPF keeps the same nonzeros as the input (log1p(0)=0).
+    # PFlogPF keeps the same nonzeros as the input (log1p(0)=0).
     assert sclr.sparse.nnz == X.nnz
 
 
@@ -103,15 +103,15 @@ def test_scverse_dropin_anndata():
     adata = ad.AnnData(X.copy())
 
     # Drop-in: replaces sc.pp.normalize_total + sc.pp.log1p + sc.tl.pca.
-    scclr.pp.pflog1ppf(adata, target="mean")
-    assert "log1ppf" in adata.layers
-    assert "log1ppf_center" in adata.obs
-    assert adata.uns["log1ppf"]["k"] is not None
+    scclr.pp.pflogpf(adata, target="mean")
+    assert "pflogpf" in adata.layers
+    assert "pflogpf_center" in adata.obs
+    assert adata.uns["pflogpf"]["k"] is not None
 
-    # The stored layer + center reconstruct PFlog1pPF exactly (normalization correctness
+    # The stored layer + center reconstruct PFlogPF exactly (normalization correctness
     # through the AnnData path).
-    Y = adata.layers["log1ppf"].toarray() - adata.obs["log1ppf_center"].to_numpy()[:, None]
-    np.testing.assert_allclose(Y, ref_pflog1ppf(counts, adata.uns["log1ppf"]["k"]), atol=1e-9)
+    Y = adata.layers["pflogpf"].toarray() - adata.obs["pflogpf_center"].to_numpy()[:, None]
+    np.testing.assert_allclose(Y, ref_pflogpf(counts, adata.uns["pflogpf"]["k"]), atol=1e-9)
 
     scclr.tl.pca(adata, n_comps=5)
     assert adata.obsm["X_pca"].shape == (adata.n_obs, 5)
@@ -137,9 +137,25 @@ def test_scverse_dropin_anndata():
 
     # Determinism: re-running the drop-in yields a bit-identical embedding.
     a2 = ad.AnnData(X.copy())
-    scclr.pp.pflog1ppf(a2, target="mean")
+    scclr.pp.pflogpf(a2, target="mean")
     scclr.tl.pca(a2, n_comps=5)
     np.testing.assert_allclose(adata.obsm["X_pca"], a2.obsm["X_pca"], atol=1e-10)
+
+
+def test_scverse_legacy_name_keeps_log1ppf_layer():
+    ad = pytest.importorskip("anndata")
+
+    counts = nb_counts(n_cells=20, n_genes=10, seed=8)
+    adata = ad.AnnData(sp.csr_matrix(counts))
+    scclr.pp.pflog1ppf(adata, target="mean")
+
+    assert "log1ppf" in adata.layers
+    assert "log1ppf_center" in adata.obs
+    assert "pflogpf" not in adata.layers
+
+    # The PCA default still auto-detects the legacy layer.
+    scclr.tl.pca(adata, n_comps=3)
+    assert adata.obsm["X_pca"].shape == (adata.n_obs, 3)
 
 
 def test_scverse_dropin_mudata():
@@ -150,8 +166,8 @@ def test_scverse_dropin_mudata():
     adt = ad.AnnData(sp.csr_matrix(nb_counts(n_cells=80, n_genes=12, seed=7)))
     mdata = md.MuData({"rna": rna, "adt": adt})
 
-    scclr.pp.pflog1ppf(mdata, target="mean")
+    scclr.pp.pflogpf(mdata, target="mean")
     scclr.tl.pca(mdata, n_comps=3)
     for mod in mdata.mod.values():
-        assert "log1ppf" in mod.layers
+        assert "pflogpf" in mod.layers
         assert mod.obsm["X_pca"].shape == (mod.n_obs, 3)
