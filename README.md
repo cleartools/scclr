@@ -35,3 +35,9 @@ scclr.tl.pca(adata, n_comps=50)             # -> adata.obsm["X_pca"], varm["PCs"
 ```
 
 This swaps in for `sc.pp.normalize_total` + `sc.pp.log1p` + `sc.tl.pca`.
+
+## Examples
+
+See `examples/angelidis_pseudobulk_scclr.ipynb` for a rendered Python notebook
+mirroring the `scclrR` Angelidis pseudobulk vignette, using `edgepython` for the
+old-vs-young differential expression comparison.

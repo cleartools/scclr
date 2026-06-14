@@ -16,6 +16,7 @@ anndata = ["anndata"]
 mudata = ["mudata==0.2.4", "anndata>=0.10.8,<0.10.9"]
 scanpy = ["scanpy"]
 test = ["pytest", "anndata>=0.10.8,<0.10.9", "mudata==0.2.4", "scanpy"]
+examples = ["anndata", "edgepython", "matplotlib", "notebook", "pandas", "scikit-learn"]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
