@@ -20,7 +20,7 @@ def load_counts():
     return sp.csr_matrix(scipy.io.mmread(DATA)).astype(np.float64)
 
 
-def ref_pflogpf(counts_dense, k):
+def ref_pf_mean(counts_dense, k):
     s = counts_dense.sum(1, keepdims=True)
     L = np.log1p(counts_dense * (k / s))
     return L - L.mean(1, keepdims=True)
@@ -32,7 +32,7 @@ def test_normalize_matches_reference_on_pbmc():
     sclr = scclr.normalize(X, target="mean")
     k = np.asarray(X.sum(1)).ravel().mean()
     assert abs(sclr.k - k) < 1e-9
-    np.testing.assert_allclose(sclr.to_dense(), ref_pflogpf(np.asarray(X.todense()), k), atol=1e-9)
+    np.testing.assert_allclose(sclr.to_dense(), ref_pf_mean(np.asarray(X.todense()), k), atol=1e-9)
     assert sclr.sparse.nnz == X.nnz  # sparsity preserved
 
 
@@ -57,14 +57,14 @@ def test_scverse_pipeline_on_pbmc_matches_sklearn():
     adata = ad.AnnData(X.copy())
 
     # Drop-in for sc.pp.normalize_total + sc.pp.log1p + sc.tl.pca, with overdispersion-derived K.
-    scclr.pp.pflogpf(adata, target="auto")
-    assert adata.uns["pflogpf"]["alpha"] is not None and adata.uns["pflogpf"]["alpha"] > 0
+    scclr.pp.pflog(adata, target="auto")
+    assert adata.uns["pflog"]["alpha"] is not None and adata.uns["pflog"]["alpha"] > 0
     scclr.tl.pca(adata, n_comps=10)
     assert adata.obsm["X_pca"].shape == (400, 10)
     assert adata.varm["PCs"].shape == (800, 10)
 
     # Sparse shifted-CLR PCA matches a full-SVD reference on the dense shifted-CLR matrix.
-    Y = adata.layers["pflogpf"].toarray() - adata.obs["pflogpf_center"].to_numpy()[:, None]
+    Y = adata.layers["pflog"].toarray() - adata.obs["pflog_center"].to_numpy()[:, None]
     sk = PCA(n_components=10, svd_solver="full").fit(Y)
     np.testing.assert_allclose(adata.uns["pca"]["variance"], sk.explained_variance_, rtol=1e-4)
     # The top (cell-type-separating) components also agree in score space.

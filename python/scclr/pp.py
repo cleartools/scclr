@@ -8,7 +8,7 @@ import numpy as np
 
 from . import _func
 
-__all__ = ["pflogpf", "pflog1ppf", "overdispersion"]
+__all__ = ["pflog", "overdispersion"]
 
 
 def _is_mudata(obj) -> bool:
@@ -19,7 +19,7 @@ def _get_matrix(adata, layer: Optional[str]):
     return adata.layers[layer] if layer is not None else adata.X
 
 
-def _pflogpf_impl(
+def _pflog_impl(
     adata,
     *,
     target="auto",
@@ -32,7 +32,7 @@ def _pflogpf_impl(
 ):
     if _is_mudata(adata):
         for mod in adata.mod.values():
-            _pflogpf_impl(
+            _pflog_impl(
                 mod,
                 target=target,
                 alpha=alpha,
@@ -62,55 +62,34 @@ def _pflogpf_impl(
     return None
 
 
-def pflogpf(
+def pflog(
     adata,
     *,
     target="auto",
     alpha: Optional[float] = None,
     layer: Optional[str] = None,
-    key_added: str = "pflogpf",
+    key_added: str = "pflog",
     center: bool = True,
     log1p: bool = True,
     densify: bool = False,
 ):
-    """Compute PFlogPF / shifted-CLR in place.
+    """Compute PFlog / shifted-CLR in place.
 
-    Writes the sparse PFlogPF matrix to ``adata.layers[key_added]`` and (when ``center``) the
-    per-cell mean to ``adata.obs[f"{key_added}_center"]``; records the chosen ``k``/``alpha`` in
+    With ``target="auto"`` (or an explicit ``alpha``) this is **PFlog**: the centered log-ratio of
+    the raw counts shifted by a uniform pseudocount ``1/(4*alpha)``,
+    ``center(log(x + 1/(4*alpha)))``. To keep the matrix sparse this is computed as the identical
+    ``center(log1p(4*alpha*x))`` (the two differ only by a per-cell constant that cancels in the
+    centering). Depth targets (``"mean"``/``"median"``/a fixed ``K``) keep the classic PF scale
+    ``K/s_i``.
+
+    Writes the sparse matrix to ``adata.layers[key_added]`` and (when ``center``) the per-cell
+    mean to ``adata.obs[f"{key_added}_center"]``; records the chosen ``k``/``alpha`` in
     ``adata.uns[key_added]``. With ``densify=True`` also writes the dense shifted-CLR into
     ``adata.X`` (scanpy-style, for generic downstream tools).
 
     For a ``MuData`` object, applies independently to each modality.
     """
-    return _pflogpf_impl(
-        adata,
-        target=target,
-        alpha=alpha,
-        layer=layer,
-        key_added=key_added,
-        center=center,
-        log1p=log1p,
-        densify=densify,
-    )
-
-
-def pflog1ppf(
-    adata,
-    *,
-    target="auto",
-    alpha: Optional[float] = None,
-    layer: Optional[str] = None,
-    key_added: str = "log1ppf",
-    center: bool = True,
-    log1p: bool = True,
-    densify: bool = False,
-):
-    """Backward-compatible alias for :func:`pflogpf`.
-
-    The legacy name stores results in ``adata.layers["log1ppf"]`` by default. New code should
-    prefer :func:`pflogpf`, which stores results under ``"pflogpf"``.
-    """
-    return _pflogpf_impl(
+    return _pflog_impl(
         adata,
         target=target,
         alpha=alpha,

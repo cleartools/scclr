@@ -7802,7 +7802,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="PFlogPF-PCA-for-Angelidis-lung-pseudobulk-RNA-seq">PFlogPF PCA for Angelidis lung pseudobulk RNA-seq<a class="anchor-link" href="#PFlogPF-PCA-for-Angelidis-lung-pseudobulk-RNA-seq">¶</a></h1><p>This notebook mirrors the <code>scclrR</code> Seurat vignette in Python. It uses the included Angelidis lung pseudobulk count matrix, runs sparse PFlogPF normalization and PCA with <code>scclr</code>, and compares PC1 loadings to an old-vs-young differential expression estimate from <code>edgepython</code>.</p>
+<h1 id="PFlog-PCA-for-Angelidis-lung-pseudobulk-RNA-seq">PFlog PCA for Angelidis lung pseudobulk RNA-seq<a class="anchor-link" href="#PFlog-PCA-for-Angelidis-lung-pseudobulk-RNA-seq">¶</a></h1><p>This notebook mirrors the <code>scclrR</code> Seurat vignette in Python. It uses the included Angelidis lung pseudobulk count matrix, runs sparse PFlog normalization and PCA with <code>scclr</code>, and compares PC1 loadings to an old-vs-young differential expression estimate from <code>edgepython</code>.</p>
 <p>The data files in <code>examples/data/</code> are genes by mouse-level pseudobulk samples. <code>scclr</code> expects observations by variables, so the notebook transposes the matrix when constructing the <code>AnnData</code> object.</p>
 </div>
 </div>
@@ -7931,7 +7931,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="PFlogPF-normalization-and-sparse-PCA">PFlogPF normalization and sparse PCA<a class="anchor-link" href="#PFlogPF-normalization-and-sparse-PCA">¶</a></h2><p><code>target="auto"</code> estimates the overdispersion parameter and sets the shifted-log scale <code>K = 4 * alpha * mean_depth</code>. The normalized matrix is stored sparsely as <code>adata.layers["pflogpf"]</code>, with the centering vector in <code>adata.obs["pflogpf_center"]</code>.</p>
+<h2 id="PFlog-normalization-and-sparse-PCA">PFlog normalization and sparse PCA<a class="anchor-link" href="#PFlog-normalization-and-sparse-PCA">¶</a></h2><p><code>target="auto"</code> estimates the overdispersion parameter and sets the shifted-log scale <code>K = 4 * alpha * mean_depth</code>. The normalized matrix is stored sparsely as <code>adata.layers["pflog"]</code>, with the centering vector in <code>adata.obs["pflog_center"]</code>.</p>
 </div>
 </div>
 </div>
@@ -7943,10 +7943,10 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">scclr</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">pflogpf</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">scclr</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">pflog</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"auto"</span><span class="p">)</span>
 <span class="n">scclr</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_comps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ncv</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
-<span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">"pflogpf"</span><span class="p">],</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">"pca"</span><span class="p">][</span><span class="s2">"variance_ratio"</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">"pflog"</span><span class="p">],</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">"pca"</span><span class="p">][</span><span class="s2">"variance_ratio"</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -7976,7 +7976,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="PCA-panel">PCA panel<a class="anchor-link" href="#PCA-panel">¶</a></h2><p>The sample-level PFlogPF PCA separates young and old pseudobulk samples along PC1.</p>
+<h2 id="PCA-panel">PCA panel<a class="anchor-link" href="#PCA-panel">¶</a></h2><p>The sample-level PFlog PCA separates young and old pseudobulk samples along PC1.</p>
 </div>
 </div>
 </div>
@@ -8116,11 +8116,11 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">pflogpf_loadings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pflog_loadings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
     <span class="s2">"gene"</span><span class="p">:</span> <span class="n">adata</span><span class="o">.</span><span class="n">var_names</span><span class="p">,</span>
     <span class="s2">"pc1_loading"</span><span class="p">:</span> <span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">[</span><span class="s2">"PCs"</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="p">})</span>
-<span class="n">merged</span> <span class="o">=</span> <span class="n">pflogpf_loadings</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">de</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">"gene"</span><span class="p">)</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">pflog_loadings</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">de</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">"gene"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">merged</span><span class="p">[</span><span class="s2">"pc1_loading"</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="s2">"logFC"</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="n">merged</span><span class="p">[</span><span class="s2">"pc1_loading"</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="n">merged</span><span class="p">[</span><span class="s2">"pc1_loading"</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="s2">"logFC"</span><span class="p">])</span>
@@ -8153,7 +8153,7 @@ a.anchor-link {
 <span class="n">mask</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="s2">"FDR"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">merged</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="s2">"pc1_loading"</span><span class="p">],</span> <span class="n">merged</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="s2">"logFC"</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"0.70"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"False"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">merged</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">"pc1_loading"</span><span class="p">],</span> <span class="n">merged</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="s2">"logFC"</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#2c7fb8"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"True"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"PFlogPF PC1 loading"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"PFlog PC1 loading"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"edgepython old-vs-young log fold change"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"edgepython FDR &lt; 0.05"</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"center left"</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.02</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[[</span><span class="s2">"top"</span><span class="p">,</span> <span class="s2">"right"</span><span class="p">]]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>

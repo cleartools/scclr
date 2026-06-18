@@ -1,7 +1,7 @@
 # Angelidis lung pseudobulk example data
 
 These files are derived from the Angelidis et al. lung single-cell RNA-seq data
-used in the PFlogPF manuscript Figure 3. Counts were summed by mouse sample to
+used in the PFlog manuscript Figure 3. Counts were summed by mouse sample to
 create a small pseudobulk RNA-seq example for the `scclrR` vignette.
 
 Files:

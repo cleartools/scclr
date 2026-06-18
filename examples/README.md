@@ -3,7 +3,7 @@
 ## Angelidis lung pseudobulk
 
 `angelidis_pseudobulk_scclr.ipynb` mirrors the `scclrR` Seurat vignette in
-Python. It runs sparse PFlogPF normalization and PCA with `scclr`, then compares
+Python. It runs sparse PFlog normalization and PCA with `scclr`, then compares
 PC1 loadings to an old-vs-young differential expression estimate from
 `edgepython`.
 
