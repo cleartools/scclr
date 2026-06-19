@@ -13,6 +13,6 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.23", features = ["extension-module"] }
 numpy = "0.23"
-runorm = { git = "https://github.com/cleartools/runorm", features = ["ruanndata"] }
+runorm = { git = "https://github.com/cleartools/runorm", rev = "9429aa00784a972fdeae64e0ca050ea08f3c5bc9", features = ["ruanndata"] }
 rupca = { git = "https://github.com/pachterlab/rupca", features = ["ruanndata"] }
 ruanndata = { git = "https://github.com/pachterlab/ruanndata" }
